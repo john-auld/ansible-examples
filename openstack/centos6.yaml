@@ -1,0 +1,22 @@
+---
+#
+# Settings to add a CentOS 6 VM
+#
+
+CLOUD_NAME:      'ovh-uat-gra3'  # /etc/openstack/clouds.yaml
+REGION_NAME:     'GRA3'
+SSH_KEY_NAME:    'deploy'
+CENTOS_IMAGE_ID: '9cb1d787-705b-4b20-976e-f9abc382b290'
+
+UAT_SECURITY_GROUPS:
+  - 'in_ssh_access'
+  - 'in_web_server'
+  - 'out_unrestricted_egress'
+
+CENTOS_6_USERDATA: |
+  {%- raw -%}#!/bin/bash
+  yum localinstall -y https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-10.noarch.rpm
+  yum install -y puppet
+  sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+  chkconfig iptables off
+  service iptable

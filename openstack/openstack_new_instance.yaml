@@ -1,0 +1,59 @@
+---
+- hosts: localhost
+  connection: local
+  
+  tasks:
+    - include_vars:
+        dir: "vars/centos{{ centos_version }}"
+
+    - include_vars: "vars/cloudflare_credentials.yml"
+
+    - name: AUTHENTICATE
+      os_auth:
+        cloud: "{{ CLOUD_NAME }}"
+
+    - name: launch an instance
+      os_server:
+        cloud:           "{{ CLOUD_NAME }}"
+        state:           present
+        name:            "{{ SERVER_NAME }}"
+        flavor:          "{{ FLAVOR_NAME }}"
+        region_name:     "{{ REGION_NAME }}"
+        image:           "{{ CENTOS_IMAGE_ID }}"
+        key_name:        "{{ SSH_KEY_NAME }}"
+        security_groups: "{{ UAT_SECURITY_GROUPS }}"
+        userdata:        "{{ CENTOS_6_USERDATA }}"
+
+
+    - name: SERVER FACTS | gather facts for node
+      os_server_facts:
+        cloud:  "{{ CLOUD_NAME }}"
+        server: "{{ server_name }}"
+
+    - name: DEBUG SERVER FACTS | output facts for node
+      debug:
+        var: openstack_servers[0]['accessIPv4']
+
+
+    - name: Add DNS A record for UAT server
+      cloudflare_dns:
+        zone:              "{{ cf_zone }}"
+        state:             present
+        type:              A
+        solo:              yes
+        record:            "{{ server_host_name }}"
+        value:             "{{ openstack_servers[0]['accessIPv4'] }}"
+        ttl:               300
+        account_email:     "{{ cf_auth_email }}"
+        account_api_token: "{{ cf_api_token }}"
+      ignore_errors: true
+
+    - name: SG RULE | Puppet Client access 
+      os_security_group_rule:
+        cloud:            "{{ CLOUD_NAME }}"
+        state:            present
+        security_group:   "Puppet_Clients"
+        protocol:         "tcp"
+        port_range_min:   8140
+        port_range_max:   8140
+        remote_ip_prefix: "{{ openstack_servers[0]['accessIPv4'] }}/32"
