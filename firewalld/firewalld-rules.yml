@@ -1,0 +1,40 @@
+---
+
+- hosts: centos7.example.com
+  tasks:
+  - name: firewalld ports
+    firewalld:
+       state: "{{ item.state }}"
+       port: "{{ item.port }}"
+       zone: public
+       immediate: yes
+       permanent: yes
+    with_items:
+        - { state: 'enabled', port: '8000/tcp' }
+        - { state: 'enabled', port: '8080/tcp' }
+        - { state: 'enabled', port: '4440/tcp' }
+        - { state: 'disabled', port: '8081/udp' }
+        - { state: 'disabled', port: '123/udp' }
+
+
+  - name: firewalld services 
+    firewalld:
+       state: "{{ item.state }}"
+       service: "{{ item.service }}"
+       zone: public
+       immediate: yes
+       permanent: yes
+    with_items:
+        - { state: 'enabled', service: 'https' }
+
+
+  - name: firewalld rich rules
+    firewalld:
+       rich_rule: rule family="{{ item.family }}" source address="{{ item.src_ip }}" service name="{{ item.service }}" log prefix="{{ item.service }}" level="{{ item.log_level }}" {{ item.policy }}
+       zone: public
+       immediate: yes
+       permanent: yes
+       state: "{{ item.rule_state }}"
+    with_items:
+        - { rule_state: 'disabled', family: 'ipv4', src_ip: '192.168.1.1/32', service: 'ssh', log_level: 'info', policy: 'accept' }
+        - { rule_state: 'enabled',  family: 'ipv4', src_ip: '192.168.199.128/32', service: 'ssh', log_level: 'info', policy: 'accept' }

@@ -1,0 +1,26 @@
+---
+users:
+ mal:
+   state: present
+   admin: False
+   expires: 1
+   uid: 2000
+   group: rundeck
+   groups:
+   shell: /bin/bash
+   password: $1$.NUoqVPD$RX8Bkhy/LBuuO0MDztQU.1
+   ssh_key_type: rsa
+   ssh_key_pub: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5PNhfyIWtjHEIKXE+FGPVicj6bVzZityXqz7+kM1/1HuOrf+dGVlXAOPpVftnoYm/redF0wXZvFjja/4u+AoJ7s7RQGS5SpaSr/Y7qWrbQqSMSB3A85pfAj+crWnB4sQzdFmBeDXY9T2nO0g9Qveh7UKr6i6Vj6NOkQ8TMrZliyGZLVt+jHi4uyIDeK1j4tmNZK3XkDA4cwuxP1SAM6LCOv4MCChcvCEW5hyMFxciQnCqDzDDge5e10R2G+BgJhDCuMuLq1IEY0gw4/vh1WA4Gi4Bu922eSZqe5KHCDaXPayu9hBquUar
+
+ priv:
+   state: present
+   admin: True
+   uid: 2001
+   expires:
+   group: rundeck
+   groups:
+   shell: /bin/bash
+   password: $1$.NUoqVPD$RX8Bkhy/LBuuO0MDztQU.1
+   ssh_key_type: rsa
+   ssh_key_pub: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5PNhfyIWtjHEIKXE+FGPVicj6bVzZityXqz7+kM1/1HuOrf+dGVlXAOPpVftnoYm/redF0wXZvFjja/4u+AoJ7s7RQGS5SpaSr/Y7qWrbQqSMSB3A85pfAj+crWnB4sQzdFmBeDXY9T2nO0g9Qveh7UKr6i6Vj6NOkQ8TMrZliyGZLVt+jHi4uyIDeK1j4tmNZK3XkDA4cwuxP1SAM6LCOv4MCChcvCEW5hyMFxciQnCqDzDDge5e10R2G+BgJhDCuMuLq1IEY0gw4/vh1WA4Gi4Bu922eSZqe5KHCDaXPayu9hBquUar
+

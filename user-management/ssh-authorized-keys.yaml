@@ -1,0 +1,19 @@
+---
+
+# ansible-playbook -i hosts  ssh-authorized-keys.yml
+
+- name: Manage ssh authorized keys
+  hosts: centos6.example.com
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: root authorized_keys
+      authorized_key:
+        user: root
+        key: "{{ item }}"
+        state: present
+        exclusive: no
+      with_file:
+        - public_keys/dell-admin
+        - public_keys/centos7-root

@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  become: yes
+  become_user: root
+  
+  tasks:
+  - name: Manage users in hosts_vars file
+    action:
+       user
+         name="{{ item.key }}"
+         state="{{ item.value.state }}"
+         uid="{{ item.value.uid}}"
+         group="{{ item.value.group }}"
+         shell="{{ item.value.shell }}"
+         groups="{{ item.value.groups }}"
+         password="{{ item.value.password }}"
+       update_password=always
+    with_dict: "{{ users }}"
+    when: '{{ item.value.admin == True }}'

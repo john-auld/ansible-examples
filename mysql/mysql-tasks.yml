@@ -1,0 +1,53 @@
+---
+
+- hosts: all
+  become: yes
+  become_user: root
+  #strategy: debug
+  gather_facts: no
+
+  vars:
+    ansible_python_interpreter: "/root/ansible/venv/bin/python"
+    dump: "{{ DUMP|default('false') }}"
+    restore: "{{ RESTORE|default('false') }}"
+    db_src: 'sd_stroke_jauld'
+    db_dst: 'sd_stroke_jauld'
+    dump_dir: '/root'
+    dump_file: 'sd_stroke_jauld.sql.gz'
+
+  tasks:
+#  - name: PIP | Global install of Python MySQL module
+#    pip: name=MySQL-python
+
+  - name: ENV | Register python interpreter
+    command: which python
+    register: python_path
+    changed_when: false
+
+  - debug: msg="{{python_path.stdout}}"
+
+  - name: MySQL | Drop MySQL test database
+    mysql_db:
+       name: test
+       state: absent
+
+  - name: MySQL | Create MySQL drupal database
+    mysql_db:
+       name: "{{ db_dst }}"
+       state: present
+       encoding: utf8mb4
+       collation: utf8mb4_general_ci
+
+  - name: MySQL | Dump database
+    mysql_db:
+      state: dump
+      name: mysql
+      target: /tmp/mysql.sql.gz
+    when: dump == 1
+
+  - name: MySQL | Restore database
+    mysql_db:
+      name: sd_stroke_jauld
+      state: import
+      target: "{{ dump_dir }}/{{ dump_file }}"
+    when: restore == 1

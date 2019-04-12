@@ -1,0 +1,6 @@
+
+#
+# Run playbook with inventrory on cmd line
+#
+
+ansible-playbook -i "centos7.example.com," user-accounts.yml
